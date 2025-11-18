@@ -1,0 +1,369 @@
+/* AI Budget Suggestions Styles */
+
+.ai-budget-suggestions {
+  margin: 20px 0;
+  padding: 16px;
+  border: 2px solid #e3f2fd;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-budget-suggestions::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4CAF50, #2196F3, #9C27B0);
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.suggestions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.suggestions-header h4 {
+  margin: 0;
+  color: #1976d2;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.suggestions-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.fetch-suggestions-btn, .refresh-suggestions-btn, .apply-all-btn, .hide-suggestions-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.fetch-suggestions-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  font-weight: 500;
+}
+
+.fetch-suggestions-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #45a049, #3d8b40);
+  transform: translateY(-1px);
+}
+
+.fetch-suggestions-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.refresh-suggestions-btn {
+  background: #f5f5f5;
+  color: #666;
+  padding: 6px 8px;
+  min-width: 32px;
+}
+
+.refresh-suggestions-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.apply-all-btn {
+  background: #2196F3;
+  color: white;
+  font-size: 0.8em;
+}
+
+.apply-all-btn:hover {
+  background: #1976D2;
+}
+
+.hide-suggestions-btn {
+  background: #f44336;
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.8em;
+}
+
+.hide-suggestions-btn:hover {
+  background: #d32f2f;
+}
+
+.ai-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  color: #c62828;
+  font-size: 0.9em;
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  text-align: center;
+  color: #666;
+}
+
+.loading-spinner {
+  font-size: 1.5em;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.no-predictions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fff3e0;
+  border: 1px solid #ffcc02;
+  border-radius: 4px;
+  color: #ef6c00;
+  font-size: 0.9em;
+}
+
+.suggestions-intro {
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.suggestion-item {
+  padding: 16px;
+  border-radius: 8px;
+  background: white;
+  border-left: 4px solid #ddd;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.suggestion-item.high-confidence {
+  border-left-color: #4CAF50;
+  background: linear-gradient(135deg, white 0%, #f1f8e9 100%);
+}
+
+.suggestion-item.medium-confidence {
+  border-left-color: #FF9800;
+  background: linear-gradient(135deg, white 0%, #fff3e0 100%);
+}
+
+.suggestion-item.low-confidence {
+  border-left-color: #f44336;
+  background: linear-gradient(135deg, white 0%, #ffebee 100%);
+}
+
+.suggestion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.category-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.category-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.trend-indicator {
+  font-size: 1.2em;
+  cursor: help;
+}
+
+.suggestion-amount {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.amount {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.confidence {
+  font-size: 0.75em;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.confidence.high-confidence {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.confidence.medium-confidence {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.confidence.low-confidence {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.suggestion-details {
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.historical-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.historical-averages {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.historical-budget-avg {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+.historical-spending-avg {
+  color: #388e3c;
+  font-weight: 500;
+}
+
+.difference {
+  font-weight: 500;
+  color: #333;
+}
+
+.reasoning {
+  color: #555;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.reasoning-text {
+  display: block;
+}
+
+.suggestion-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.apply-suggestion-btn {
+  padding: 8px 16px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.apply-suggestion-btn:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .suggestions-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .suggestions-actions {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+  
+  .suggestion-header {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  
+  .suggestion-amount {
+    align-self: flex-end;
+    text-align: right;
+  }
+  
+  .historical-comparison {
+    gap: 6px;
+  }
+  
+  .historical-averages {
+    gap: 2px;
+  }
+}
+
+/* Animation for when suggestions appear */
+.suggestions-list {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

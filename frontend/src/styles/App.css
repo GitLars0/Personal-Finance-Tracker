@@ -1,0 +1,195 @@
+/* ---------- NAVBAR ---------- */
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 2rem;
+  background-color: #1e3a8a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+}
+
+.nav-items {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  font-size: 1rem;
+}
+
+.nav-link:hover {
+  color: #facc15; /* yellow hover */
+}
+
+.nav-link-button {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-link-button:hover {
+  color: #facc15;
+}
+
+/* ✅ Add logout button style */
+.logout-button {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #ef4444;
+}
+
+/* ---------- GENERAL ---------- */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  background-color: #f9fafb;
+}
+
+button {
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #1e3a8a;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #3b82f6;
+}
+
+input {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 300px;
+}
+
+h2 {
+  color: #1e3a8a;
+}
+
+/* ---------- PAGE CONTAINERS ---------- */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.error-message {
+  color: #dc2626; /* red */
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.info-message {
+  color: #16a34a; /* green */
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-items {
+    gap: 0.5rem;
+  }
+
+  .nav-link,
+  .logout-button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ---------- FOOTER ---------- */
+.app-footer {
+  background-color: #1e3a8a;
+  color: white;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  margin-top: auto;
+  position: relative;
+  z-index: 100;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-inner span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Ensure the footer sticks to bottom */
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+  /* Remove flex display to preserve original page layouts */
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+  .app-footer {
+    padding: 1rem;
+  }
+  
+  .footer-inner span {
+    font-size: 0.8rem;
+  }
+}

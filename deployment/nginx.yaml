@@ -1,0 +1,394 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-proxy
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-main-conf
+  namespace: nginx-proxy
+data:
+  nginx.conf: |
+    # Main nginx configuration
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+        use epoll;
+        multi_accept on;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        # Logging format
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"'
+                        ' rt=$request_time uct="$upstream_connect_time"'
+                        ' uht="$upstream_header_time" urt="$upstream_response_time"';
+
+        access_log /var/log/nginx/access.log main;
+
+        # Basic settings
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        types_hash_max_size 2048;
+        client_max_body_size 20M;
+
+        # Gzip compression
+        gzip on;
+        gzip_vary on;
+        gzip_min_length 10240;
+        gzip_proxied expired no-cache no-store private auth;
+        gzip_types
+            text/plain
+            text/css
+            text/xml
+            text/javascript
+            application/javascript
+            application/xml+rss
+            application/json
+            application/xml
+            image/svg+xml;
+
+        # Rate limiting
+        limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+        limit_req_zone $binary_remote_addr zone=auth:10m rate=5r/s;
+
+        # Upstream definitions
+        upstream backend {
+            server finance-app-service.default.svc.cluster.local:80 max_fails=3 fail_timeout=30s;
+            keepalive 32;
+        }
+
+        upstream ai_service {
+            server ai-service.default.svc.cluster.local:5001 max_fails=3 fail_timeout=30s;
+            keepalive 16;
+        }
+
+        upstream prometheus {
+            server prometheus.default.svc.cluster.local:9090 max_fails=3 fail_timeout=30s;
+        }
+
+        upstream grafana {
+            server grafana.default.svc.cluster.local:3000 max_fails=3 fail_timeout=30s;
+        }
+
+        # Security headers
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+        # Include additional configurations
+        include /etc/nginx/conf.d/*.conf;
+    }
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-default-conf
+  namespace: nginx-proxy
+data:
+  default.conf: |
+    # Personal Finance Tracker - Main Site Configuration
+    server {
+        listen 80;
+        server_name localhost;
+        
+        # Security headers
+        add_header X-Frame-Options "SAMEORIGIN" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+        # Root directory for static files (if serving directly from nginx)
+        root /var/www/html;
+        index index.html;
+
+        # Main application routes - proxy to backend for SPA
+        location / {
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 30s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+            
+            # Buffer settings
+            proxy_buffering on;
+            proxy_buffer_size 4k;
+            proxy_buffers 8 4k;
+            
+            # Keep-alive
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+        }
+
+        # Backend API routes
+        location /api/ {
+            limit_req zone=api burst=20 nodelay;
+            
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 30s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+            
+            # Buffer settings
+            proxy_buffering on;
+            proxy_buffer_size 4k;
+            proxy_buffers 8 4k;
+            
+            # Keep-alive
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+        }
+
+        # Authentication routes with stricter rate limiting
+        location /auth/ {
+            limit_req zone=auth burst=10 nodelay;
+            
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Timeouts
+            proxy_connect_timeout 30s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+        }
+
+        # Health check routes
+        location /health {
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # No caching for health checks
+            add_header Cache-Control "no-cache, no-store, must-revalidate";
+            add_header Pragma "no-cache";
+            add_header Expires "0";
+        }
+
+        # Prometheus metrics (restrict access in production)
+        location /metrics {
+            # Uncomment to restrict access
+            # allow 10.0.0.0/8;
+            # allow 172.16.0.0/12;
+            # allow 192.168.0.0/16;
+            # deny all;
+            
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # AI Service routes
+        location /ai/ {
+            limit_req zone=api burst=10 nodelay;
+            
+            # Remove /ai prefix when forwarding
+            rewrite ^/ai/(.*) /$1 break;
+            
+            proxy_pass http://ai_service;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Longer timeouts for AI processing
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 60s;
+            proxy_read_timeout 60s;
+        }
+
+        # Static assets with caching - try nginx first, then backend
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+            add_header X-Content-Type-Options "nosniff";
+            
+            # Try to serve from nginx first, fallback to backend
+            try_files $uri @static_fallback;
+        }
+
+        # Static file fallback to backend
+        location @static_fallback {
+            proxy_pass http://backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+
+        # Deny access to sensitive files
+        location ~ /\. {
+            deny all;
+            access_log off;
+            log_not_found off;
+        }
+
+        location ~ ~$ {
+            deny all;
+            access_log off;
+            log_not_found off;
+        }
+
+        # Error pages
+        error_page 404 /404.html;
+        error_page 500 502 503 504 /50x.html;
+        
+        location = /50x.html {
+            root /usr/share/nginx/html;
+        }
+    }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-monitoring-conf
+  namespace: nginx-proxy
+data:
+  monitoring.conf: |
+    # Monitoring services configuration
+    server {
+        listen 80;
+        server_name monitoring.localhost;
+
+        # Prometheus
+        location /prometheus/ {
+            # Remove /prometheus prefix when forwarding
+            rewrite ^/prometheus/(.*) /$1 break;
+            
+            proxy_pass http://prometheus;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Basic auth for production (uncomment and configure)
+            # auth_basic "Prometheus Access";
+            # auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+        # Grafana
+        location /grafana/ {
+            # Remove /grafana prefix when forwarding
+            rewrite ^/grafana/(.*) /$1 break;
+            
+            proxy_pass http://grafana;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # WebSocket support for Grafana live features
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+
+        # Direct access redirects
+        location / {
+            return 301 /grafana/;
+        }
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: nginx-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: main-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: conf-d-default
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: conf-d-monitoring
+              mountPath: /etc/nginx/conf.d/monitoring.conf
+              subPath: monitoring.conf
+      volumes:
+        - name: main-conf
+          configMap:
+            name: nginx-main-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: conf-d-default
+          configMap:
+            name: nginx-default-conf
+            items:
+              - key: default.conf
+                path: default.conf
+        - name: conf-d-monitoring
+          configMap:
+            name: nginx-monitoring-conf
+            items:
+              - key: monitoring.conf
+                path: monitoring.conf
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: nginx-proxy
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80

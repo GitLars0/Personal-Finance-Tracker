@@ -1,0 +1,185 @@
+/* Inline Account Form Styles */
+.inline-account-form {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 8px;
+}
+
+.inline-account-form .form-header {
+  margin-bottom: 16px;
+}
+
+.inline-account-form .form-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.inline-account-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.inline-account-form .form-group {
+  margin-bottom: 0;
+}
+
+.inline-account-form .form-group:nth-child(3),
+.inline-account-form .form-group:nth-child(4) {
+  grid-column: 1 / -1;
+}
+
+.inline-account-form .form-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: #495057;
+  font-size: 14px;
+}
+
+.inline-account-form .form-group input,
+.inline-account-form .form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  background: white;
+}
+
+.inline-account-form .form-group input:focus,
+.inline-account-form .form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.inline-account-form .form-group input:disabled,
+.inline-account-form .form-group select:disabled {
+  background-color: #e9ecef;
+  opacity: 0.6;
+}
+
+.inline-account-form .form-help {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.inline-account-form .form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.inline-account-form .cancel-btn,
+.inline-account-form .submit-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inline-account-form .cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.inline-account-form .cancel-btn:hover:not(:disabled) {
+  background: #5a6268;
+}
+
+.inline-account-form .submit-btn {
+  background: #007bff;
+  color: white;
+}
+
+.inline-account-form .submit-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.inline-account-form .submit-btn:disabled,
+.inline-account-form .cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.inline-account-form .error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+/* Account Selector Wrapper */
+.account-selector-wrapper {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.account-selector-wrapper select {
+  flex: 1;
+}
+
+.create-account-btn {
+  padding: 8px 12px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.create-account-btn:hover {
+  background: #218838;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.link-btn:hover {
+  color: #0056b3;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .inline-account-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .inline-account-form .form-group:nth-child(3),
+  .inline-account-form .form-group:nth-child(4) {
+    grid-column: 1;
+  }
+  
+  .account-selector-wrapper {
+    flex-direction: column;
+  }
+  
+  .create-account-btn {
+    align-self: flex-start;
+  }
+}

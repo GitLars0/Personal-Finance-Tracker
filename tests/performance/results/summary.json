@@ -1,0 +1,166 @@
+{
+    "metrics": {
+        "http_req_sending": {
+            "avg": 0.015857570422534044,
+            "min": 0.002,
+            "med": 0.013,
+            "max": 1.823,
+            "p(90)": 0.026,
+            "p(95)": 0.033
+        },
+        "iterations": {
+            "count": 7052,
+            "rate": 17.048988130224657
+        },
+        "http_req_waiting": {
+            "avg": 72.51299169014054,
+            "min": 0.309,
+            "med": 18.182499999999997,
+            "max": 4330.643,
+            "p(90)": 165.3591,
+            "p(95)": 278.12899999999996
+        },
+        "data_received": {
+            "count": 40796600,
+            "rate": 98630.28206941624
+        },
+        "errors": {
+            "passes": 0,
+            "fails": 28400,
+            "thresholds": {
+                "rate<0.01": false
+            },
+            "value": 0
+        },
+        "vus": {
+            "value": 49,
+            "min": 1,
+            "max": 49
+        },
+        "http_req_tls_handshaking": {
+            "med": 0,
+            "max": 0,
+            "p(90)": 0,
+            "p(95)": 0,
+            "avg": 0,
+            "min": 0
+        },
+        "http_req_receiving": {
+            "avg": 0.0587641549295774,
+            "min": 0.007,
+            "med": 0.038,
+            "max": 14.303,
+            "p(90)": 0.08,
+            "p(95)": 0.097
+        },
+        "vus_max": {
+            "value": 50,
+            "min": 50,
+            "max": 50
+        },
+        "http_reqs": {
+            "count": 28400,
+            "rate": 68.66013370652017
+        },
+        "data_sent": {
+            "count": 7561673,
+            "rate": 18281.178845950126
+        },
+        "http_req_duration": {
+            "avg": 72.58761341549308,
+            "min": 0.335,
+            "med": 18.256500000000003,
+            "max": 4330.732,
+            "p(90)": 165.41700000000003,
+            "p(95)": 278.2325499999999,
+            "thresholds": {
+                "p(95)<500": false
+            }
+        },
+        "http_req_blocked": {
+            "min": 0,
+            "med": 0.004,
+            "max": 9.815,
+            "p(90)": 0.007,
+            "p(95)": 0.009,
+            "avg": 0.005881267605633444
+        },
+        "checks": {
+            "passes": 35500,
+            "fails": 0,
+            "value": 1
+        },
+        "iteration_duration": {
+            "avg": 1287.9671314801446,
+            "min": 1014.404416,
+            "med": 1148.688833,
+            "max": 5976.426125,
+            "p(90)": 1561.9027916,
+            "p(95)": 1939.674816849998
+        },
+        "http_req_duration{expected_response:true}": {
+            "max": 4330.732,
+            "p(90)": 165.41700000000003,
+            "p(95)": 278.2325499999999,
+            "avg": 72.58761341549308,
+            "min": 0.335,
+            "med": 18.256500000000003
+        },
+        "http_req_failed": {
+            "passes": 0,
+            "fails": 28400,
+            "value": 0
+        },
+        "http_req_connecting": {
+            "avg": 0.0005590140845070422,
+            "min": 0,
+            "med": 0,
+            "max": 2.534,
+            "p(90)": 0,
+            "p(95)": 0
+        }
+    },
+    "root_group": {
+        "name": "",
+        "path": "",
+        "id": "d41d8cd98f00b204e9800998ecf8427e",
+        "groups": {},
+        "checks": {
+                "login successful": {
+                    "name": "login successful",
+                    "path": "::login successful",
+                    "id": "72410831cb1258cbc9a2391f92e33c94",
+                    "passes": 7100,
+                    "fails": 0
+                },
+                "received token": {
+                    "name": "received token",
+                    "path": "::received token",
+                    "id": "bcf4e21b7d16f6a96e15eba33c5ac82c",
+                    "passes": 7100,
+                    "fails": 0
+                },
+                "dashboard loaded": {
+                    "passes": 7100,
+                    "fails": 0,
+                    "name": "dashboard loaded",
+                    "path": "::dashboard loaded",
+                    "id": "05ac5474aef65cce4bd5c2ef7208d6ed"
+                },
+                "transactions loaded": {
+                    "name": "transactions loaded",
+                    "path": "::transactions loaded",
+                    "id": "adadf24c730c1af8c4c189fbece7ab5a",
+                    "passes": 7100,
+                    "fails": 0
+                },
+                "budgets loaded": {
+                    "passes": 7100,
+                    "fails": 0,
+                    "name": "budgets loaded",
+                    "path": "::budgets loaded",
+                    "id": "d1faf93c786c6bd468729b78539d842a"
+                }
+            }
+    }
+}

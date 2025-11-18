@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-password
+type: Opaque
+stringData:
+  password: "your_real_password"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finance-app
+  template:
+    metadata:
+      labels:
+        app: finance-app
+    spec:
+      containers:
+        - name: finance-app
+          image: europe-north2-docker.pkg.dev/dat515group-22/app/myapp:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: REDIS_URL
+              value: "redis://:devpass@redis:6379/0"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_NAME
+              value: "finance_tracker"
+            - name: DB_HOST
+              value: "postgres-db"
+            - name: ENV
+              value: "prod"
+            - name: JWT_SECRET
+              valueform: 
+                secretKeyRef: 
+                  name: finance-app-secret
+                  key: secret
+            - name: AI_SERVICE_HOST
+              value: "ai-service"
+            - name: AI_SERVICE_PORT
+              value: "5001"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: password
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-app-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: finance-app
+  ports:
+    - port: 80
+      targetPort: 8080
