@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: finance-app
-          image: europe-north2-docker.pkg.dev/dat515group-22/app/myapp:latest
+          image: europe-north2-docker.pkg.dev/personalfinancetracker-478500/pft/personalfinancetracker:v1.1
           ports:
             - containerPort: 8080
           env:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: ai-service
-          image: europe-north2-docker.pkg.dev/dat515group-22/app/ai-service:latest
+          image: europe-north2-docker.pkg.dev/personalfinancetracker-478500/pft/ai-service:v1.1
           ports:
             - containerPort: 5001
           env:
